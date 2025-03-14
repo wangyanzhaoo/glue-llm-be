@@ -1,0 +1,51 @@
+server:
+  servlet:
+    # 请求前缀
+    context-path: /api
+  # 开启GZIP
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 10240
+
+spring:
+  profiles:
+    active: dev
+  web:
+    resources:
+      add-mappings: false
+  jpa:
+    # 显示sql
+    show-sql: true
+    open-in-view: true
+  data:
+    redis:
+      repositories:
+        enabled: false
+  jackson:
+    time-zone: GMT+8
+    # 日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  cache:
+    type: redis
+
+jwt:
+  private.key: classpath:key/rsa.private.key
+  public.key: classpath:key/rsa.public.key
+
+# 加密
+jasypt:
+  encryptor:
+    # 加密密钥
+    password: (^#HC^7hs@!K
+
+# Local日期类型序列化及反序列化
+local:
+  time-patterns: HH:mm:ss
+  date-patterns: yyyy-MM-dd
+  date-time-patterns: yyyy-MM-dd HH:mm:ss
+
+minio:
+  bucketTemp: caster-tempfile
+  bucketFormal: caster-formalfile

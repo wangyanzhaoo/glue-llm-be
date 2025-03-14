@@ -1,0 +1,76 @@
+server:
+  port: 8001
+
+# 连接池
+spring:
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/new_lancer_1?serverTimezone=Asia/Shanghai
+      username: root
+      password: ENC(zZPks3E8vdzd4yX+Zq1YoZPoK6l44MJy8T8R3ZgFsEFRvYWQhBCC3esxQ5x49KKS)
+      type: com.zaxxer.hikari.HikariDataSource
+      hikari:
+        pool-name: LancerHikariCP
+        auto-commit: true
+        minimum-idle: 10
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        connection-timeout: 30000
+    secondary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/new_lancer_2?serverTimezone=Asia/Shanghai
+      username: root
+      password: ENC(zZPks3E8vdzd4yX+Zq1YoZPoK6l44MJy8T8R3ZgFsEFRvYWQhBCC3esxQ5x49KKS)
+      type: com.zaxxer.hikari.HikariDataSource
+      hikari:
+        pool-name: SecondaryHikariCP
+        auto-commit: true
+        minimum-idle: 10
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        connection-timeout: 30000
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 7788
+      database: 0
+      password: ENC(3RFvUNXTlt4EF0as/IJ9P1kokOShYiRcsBlMZST88/I43jykUGMNIY6y7D/ii8V2)
+      timeout: 500
+
+# api文档
+springdoc:
+  api-docs:
+    enabled: true
+    path: /rest-api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+
+# 日志
+logging:
+  pattern:
+    console: "Lancer - %green(%d{HH:mm:ss}) %red(%thread) %yellow(%-5level) %cyan(%logger{36}) - %msg %n"
+  level:
+    root: INFO
+    # 记录sql
+    org:
+      hibernate:
+        SQL: INFO
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+#    org.springframework.web: trace
+#    org.springframework.security: trace
+#    org.springframework.security.oauth2: debug
+
+minio:
+  endpoint: http://127.0.0.1:9000
+  accesskey: admin
+  secretkey: ENC(78aY1XV54RdQs2RJMPW1gdyzYAymlhp3BrgAULz2OjH5+nemK3OQAaqb3eXjw8J6)
