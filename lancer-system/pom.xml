@@ -19,6 +19,12 @@
             <version>1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.rune</groupId>
+            <artifactId>llm-oneApi</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!--配置项加密 https://github.com/ulisesbocchio/jasypt-spring-boot-->
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
