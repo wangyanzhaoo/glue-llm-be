@@ -3,15 +3,15 @@ package com.rune.admin.domain.entity;
 import com.rune.annotation.PrimaryEntity;
 import com.rune.domain.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+
 import java.util.Set;
 
 /**
@@ -71,4 +71,19 @@ public class User extends BaseEntity {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Set<Role> roles;
+
+    // 以下为 new-api 表字段
+    @Schema(description = "分组")
+    @Column(name = "`group`")
+    private String group;
+
+    @Schema(description = "统计信息-已用额度")
+    private String usedLimit;
+
+    @Schema(description = "统计信息-剩余额度")
+    private String remainLimit;
+
+    @Schema(description = "统计信息-调用次数")
+    private Long requestCount;
+
 }

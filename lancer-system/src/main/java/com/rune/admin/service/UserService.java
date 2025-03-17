@@ -6,13 +6,13 @@ import com.rune.admin.domain.dto.UserQuery;
 import com.rune.admin.domain.entity.*;
 import com.rune.admin.domain.mapstruct.UserMapper;
 import com.rune.admin.domain.vo.UserView;
-import com.rune.admin.repository.PrimaryRepo;
-import com.rune.admin.repository.SecondRepo;
 import com.rune.admin.repository.UserRepo;
 import com.rune.admin.util.DataRuleUtil;
 import com.rune.exception.BadRequestException;
+import com.rune.new_api.domain.entity.Users;
+import com.rune.new_api.repository.UsersRepo;
+import com.rune.new_api.service.UsersService;
 import com.rune.querydsl.JPAQueryFactoryPrimary;
-import com.rune.querydsl.JPAQueryFactorySecond;
 import com.rune.utils.SecurityUtils;
 import com.rune.utils.UpdateUtil;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,10 @@ public class UserService {
 
     private final UserRepo userRepo;
 
+    final UsersRepo apiUsersRepo;
+
+    final UsersService apiUsersService;
+
     private final UserMapper userMapper;
 
     private final JPAQueryFactoryPrimary queryFactory;
@@ -51,7 +55,7 @@ public class UserService {
         BooleanBuilder builder = new BooleanBuilder();
         QUser qUser = QUser.user;
         // 不查询当前登录用户
-        builder.and(qUser.id.ne(SecurityUtils.getCurrentId()));
+//        builder.and(qUser.id.ne(SecurityUtils.getCurrentId()));
         if (query.getOrganizationId() != null) builder.and(qUser.organizationId.eq(query.getOrganizationId()));
         if (StringUtils.isNotBlank(query.getUsername())) builder.and(qUser.username.contains(query.getUsername()));
         if (StringUtils.isNotBlank(query.getNickName())) builder.and(qUser.nickName.contains(query.getNickName()));
@@ -64,6 +68,7 @@ public class UserService {
         return page.map(userMapper::toVo);
     }
 
+    @Transactional(value = "unionTransactionManager")
     public String create(User resources) {
         userRepo.findByUsername(resources.getUsername()).ifPresent(u -> {
             throw new BadRequestException("用户: " + u.getUsername() + " 已存在");
@@ -75,8 +80,38 @@ public class UserService {
         // TODO 新增 修改 校验组织、数据权限范围是否存在。 角色是否需要？页面所有用到下拉数据（字典等）都要验证？
         checkRule(resources.getDataRule().getId());
         checkOrganization(organizationId);
+        if (StringUtils.isBlank(resources.getUsedLimit())) {
+            resources.setUsedLimit("0");
+        }
+        if (StringUtils.isBlank(resources.getRemainLimit())) {
+            resources.setRemainLimit("0");
+        }
         userRepo.save(resources);
+        fillNewApiUserEntity(resources);
         return password;
+    }
+
+    private void fillNewApiUserEntity(User resources) {
+        Users users = new Users();
+        users.setGroup(resources.getGroup());
+        users.setId(resources.getId());
+        users.setUsername(resources.getUsername());
+        users.setPassword("$2a$10$tjvjvoL/kZnd/3wBWRxoXefMod95UzHMfJxDrnJJxtb6To9xxfIy.");
+        users.setDisplayName(resources.getNickName());
+        users.setRole(1L);
+        users.setStatus(1L);
+        users.setQuota(Long.valueOf(resources.getRemainLimit()));
+        users.setUsedQuota(Long.valueOf(resources.getUsedLimit()));
+        users.setRequestCount(resources.getRequestCount());
+        apiUsersRepo.save(users);
+    }
+
+    private void updateNewApiUserEntity(User resources) {
+        Users users = new Users();
+        users.setGroup(resources.getGroup());
+        users.setDisplayName(resources.getNickName());
+        users.setQuota(Long.valueOf(resources.getRemainLimit()));
+        apiUsersService.update(users);
     }
 
     @Transactional
@@ -104,6 +139,7 @@ public class UserService {
         userRepo.save(resources);
         // 是否需要更新当前组织关联的用户
         if (flag) DataRuleUtil.getAllowUsername(Set.of(user.getId()));
+        updateNewApiUserEntity(resources);
     }
 
     /**
@@ -135,6 +171,7 @@ public class UserService {
         // 无法删除登录用户
         if (ids.contains(currentId)) throw new BadRequestException("无法删除当前登录的用户");
         userRepo.deleteAllByIdInBatch(ids);
+        apiUsersService.delete(ids);
     }
 
     public Object userInfo(String username) {

@@ -8,7 +8,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class TransactionManagerConfig {
 
-    @Bean(name = "transactionManager")
+    @Bean(name = "unionTransactionManager")
     public PlatformTransactionManager transactionManager(
             @Qualifier("primaryTransactionManager") PlatformTransactionManager txManager1,
             @Qualifier("secondaryTransactionManager") PlatformTransactionManager txManager2) {

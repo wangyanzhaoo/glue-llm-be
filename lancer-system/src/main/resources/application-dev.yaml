@@ -1,12 +1,12 @@
 server:
-  port: 8001
+  port: 8010
 
 # 连接池
 spring:
   datasource:
     primary:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/new_lancer_1?serverTimezone=Asia/Shanghai
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/gule_llm?serverTimezone=Asia/Shanghai
       username: root
       password: ENC(zZPks3E8vdzd4yX+Zq1YoZPoK6l44MJy8T8R3ZgFsEFRvYWQhBCC3esxQ5x49KKS)
       type: com.zaxxer.hikari.HikariDataSource
@@ -19,9 +19,9 @@ spring:
         connection-timeout: 30000
     secondary:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/new_lancer_2?serverTimezone=Asia/Shanghai
+      jdbc-url: jdbc:mysql://127.0.0.1:3307/new-api?serverTimezone=Asia/Shanghai
       username: root
-      password: ENC(zZPks3E8vdzd4yX+Zq1YoZPoK6l44MJy8T8R3ZgFsEFRvYWQhBCC3esxQ5x49KKS)
+      password: 123456
       type: com.zaxxer.hikari.HikariDataSource
       hikari:
         pool-name: SecondaryHikariCP
@@ -38,7 +38,7 @@ spring:
   data:
     redis:
       host: 127.0.0.1
-      port: 7788
+      port: 6379
       database: 0
       password: ENC(3RFvUNXTlt4EF0as/IJ9P1kokOShYiRcsBlMZST88/I43jykUGMNIY6y7D/ii8V2)
       timeout: 500

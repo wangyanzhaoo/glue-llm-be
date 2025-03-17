@@ -38,4 +38,13 @@ public class UserView {
     private String createBy;
 
     private Timestamp createTime;
+
+    private String group;
+
+    private String usedLimit;
+
+    private String remainLimit;
+
+    private Long requestCount;
+
 }

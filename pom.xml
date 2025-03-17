@@ -8,6 +8,7 @@
         <module>lancer-system</module>
         <module>lancer-common</module>
         <module>lancer-file</module>
+        <module>llm-oneApi</module>
     </modules>
 
     <parent>
