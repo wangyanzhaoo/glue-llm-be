@@ -48,6 +48,13 @@ public class SessionApi {
         return ApiResponse.ok(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(summary = "修改：对话名称")
+    @PutMapping("updateTitle")
+    public ResponseEntity<ApiOk> updateTitle(Long session, String title) {
+        sessionService.updateTitle(session, title);
+        return ApiResponse.ok();
+    }
+
     @Operation(summary = "删除")
     @DeleteMapping("/{ids}")
     public ResponseEntity<ApiOk> delete(@PathVariable("ids") Set<Long> ids) {

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 
 /**
@@ -19,7 +20,7 @@ import lombok.Setter;
 @Entity
 @PrimaryEntity
 @Table(name = "llm_channel")
-//@Where(clause = "is_delete = false")
+@Where(clause = "is_delete = false")
 public class Channel extends BaseEntity {
 
     @Id

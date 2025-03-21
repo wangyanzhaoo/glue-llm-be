@@ -34,6 +34,12 @@ public class ChatApi {
         return ApiResponse.page(chatService.queryAll(query));
     }
 
+    @Operation(summary = "查询单个")
+    @GetMapping("queryBySessionId")
+    public ResponseEntity<ApiOk> queryBySessionId(Long sessionId) {
+        return ApiResponse.ok(chatService.queryBySessionId(sessionId));
+    }
+
     @Operation(summary = "新增")
     @PostMapping
     public ResponseEntity<ApiOk> create(@Validated @RequestBody Chat resources) {

@@ -51,6 +51,13 @@ public class SessionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public void updateTitle(Long sessionId, String title) {
+        QSession qSession = QSession.session;
+        queryFactory.update(qSession).set(qSession.title, title)
+                .where(qSession.id.eq(sessionId), qSession.createBy.eq(SecurityUtils.getCurrentUsername())).execute();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Set<Long> ids) {
         QSession qSession = QSession.session;
         queryFactory.update(qSession).set(qSession.isDelete, true).where(qSession.id.in(ids)).execute();
