@@ -16,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author yangkf
@@ -34,6 +36,12 @@ public class ChatService {
     public Page<ChatView> queryAll(ChatQuery query) {
         Page<Chat> page = chatRepo.findAll(PageRequest.of(query.getCurrent(), query.getPageSize()));
         return page.map(chatMapper::toVo);
+    }
+
+    public List<ChatView> queryBySessionId(Long sessionId) {
+        QChat qChat = QChat.chat;
+        List<Chat> fetch = queryFactory.selectFrom(qChat).where(qChat.sessionId.eq(sessionId)).fetch();
+        return fetch.stream().map(chatMapper::toVo).collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
