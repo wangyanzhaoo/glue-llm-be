@@ -54,7 +54,7 @@ public class SessionService {
     public void updateTitle(Long sessionId, String title) {
         QSession qSession = QSession.session;
         queryFactory.update(qSession).set(qSession.title, title)
-                .where(qSession.id.eq(sessionId), qSession.createBy.eq(SecurityUtils.getCurrentUsername())).execute();
+                .where(qSession.id.eq(sessionId), qSession.userId.eq(SecurityUtils.getCurrentId())).execute();
     }
 
     @Transactional(rollbackFor = Exception.class)

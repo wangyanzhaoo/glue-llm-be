@@ -36,19 +36,19 @@ public class UsersService {
         return page.map(usersMapper::toVo);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void create(Users resources) {
         usersRepo.save(resources);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void update(Users resources) {
         Users users = usersRepo.findById(resources.getId()).orElseThrow(() -> new BadRequestException("更新的new-api 用户表不存在"));
         UpdateUtil.copyNullProperties(users, resources);
         usersRepo.save(resources);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void delete(Set<Long> ids) {
         QUsers qUsers = QUsers.users;
         queryFactory.update(qUsers).set(qUsers.deletedAt, LocalDateTime.now()).where(qUsers.id.in(ids)).execute();

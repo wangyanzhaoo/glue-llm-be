@@ -31,6 +31,9 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Schema(description = "ApiTokenID")
+    private Long apiUserId;
+
     @Schema(description = "昵称")
     @NotBlank(message = "昵称不能为空")
     @Length(max = 10)
