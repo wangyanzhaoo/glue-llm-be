@@ -37,19 +37,19 @@ public class TokensService {
         return page.map(tokensMapper::toVo);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void create(Tokens resources) {
         tokensRepo.save(resources);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void update(Tokens resources) {
         Tokens tokens = tokensRepo.findById(resources.getId()).orElseThrow(() -> new BadRequestException("更新的new-api Api令牌表不存在"));
         UpdateUtil.copyNullProperties(tokens, resources);
         tokensRepo.save(resources);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void delete(Set<Long> ids) {
         QTokens qTokens = QTokens.tokens;
         queryFactory.update(qTokens).set(qTokens.deletedAt, LocalDateTime.now()).where(qTokens.id.in(ids)).execute();

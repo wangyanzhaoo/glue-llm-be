@@ -87,14 +87,15 @@ public class UserService {
             resources.setRemainLimit("0");
         }
         userRepo.save(resources);
-        fillNewApiUserEntity(resources);
+        Long aLong = fillNewApiUserEntity(resources);
+        resources.setApiUserId(aLong);
+        userRepo.save(resources);
         return password;
     }
 
-    private void fillNewApiUserEntity(User resources) {
+    private Long fillNewApiUserEntity(User resources) {
         Users users = new Users();
         users.setGroup(resources.getGroup());
-        users.setId(resources.getId());
         users.setUsername(resources.getUsername());
         users.setPassword("$2a$10$tjvjvoL/kZnd/3wBWRxoXefMod95UzHMfJxDrnJJxtb6To9xxfIy.");
         users.setDisplayName(resources.getNickName());
@@ -104,6 +105,7 @@ public class UserService {
         users.setUsedQuota(Long.valueOf(resources.getUsedLimit()));
         users.setRequestCount(resources.getRequestCount());
         apiUsersRepo.save(users);
+        return users.getId();
     }
 
     private void updateNewApiUserEntity(User resources) {

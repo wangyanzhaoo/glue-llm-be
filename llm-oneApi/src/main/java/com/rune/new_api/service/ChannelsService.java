@@ -33,19 +33,19 @@ public class ChannelsService {
         return page.map(channelsMapper::toVo);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void create(Channels resources) {
         channelsRepo.save(resources);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void update(Channels resources) {
         Channels channels = channelsRepo.findById(resources.getId()).orElseThrow(() -> new BadRequestException("更新的new-api 渠道表不存在"));
         UpdateUtil.copyNullProperties(channels, resources);
         channelsRepo.save(resources);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "secondaryTransactionManager", rollbackFor = Exception.class)
     public void delete(Set<Long> ids) {
         channelsRepo.deleteAllByIdIn(ids);
     }

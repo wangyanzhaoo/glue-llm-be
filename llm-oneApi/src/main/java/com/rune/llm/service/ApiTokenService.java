@@ -43,6 +43,12 @@ public class ApiTokenService {
 
     @Transactional(value = "unionTransactionManager", rollbackFor = Exception.class)
     public void create(ApiToken resources) {
+        QApiToken qApiToken = QApiToken.apiToken;
+        ApiToken apiToken = queryFactory.selectFrom(qApiToken)
+                .where(qApiToken.userId.eq(SecurityUtils.getCurrentId())).fetchOne();
+        if (apiToken != null) {
+            throw new BadRequestException("当前用户已经存在令牌");
+        }
         resources.setUserId(SecurityUtils.getCurrentId());
         resources.setKey(UUID.randomUUID().toString());
         apiTokenRepo.save(resources);
