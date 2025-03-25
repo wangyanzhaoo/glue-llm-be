@@ -16,21 +16,22 @@ import jakarta.validation.ValidatorFactory;
  */
 @Configuration
 public class ValidationConfig {
+
     @Bean
-    public Validator validator() {
+    public static Validator validator() {
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
                 .configure()
-                // failFast 的意思只要出现校验失败的情况，就立即结束校验，不再进行后续的校验。
+                // failFast 的意思：只要出现校验失败，就立即结束校验，不再进行后续的校验。
                 .failFast(true)
                 .buildValidatorFactory();
-
         return validatorFactory.getValidator();
     }
 
     @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
-        MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor();
-        methodValidationPostProcessor.setValidator(validator());
-        return methodValidationPostProcessor;
+    public static MethodValidationPostProcessor methodValidationPostProcessor() {
+        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
+        // 注意：这里直接调用静态方法 validator() 来设置 Validator
+        processor.setValidator(validator());
+        return processor;
     }
 }
