@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/captcha").permitAll()
                         .requestMatchers("/file/auth").permitAll()
+                        .requestMatchers("/v1/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // 设置 oauth2 资源服务器
