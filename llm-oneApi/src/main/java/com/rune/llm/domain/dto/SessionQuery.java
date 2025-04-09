@@ -13,4 +13,8 @@ import lombok.Setter;
 @Setter
 public class SessionQuery extends BaseQuery {
 
+    private String title;
+
+    private String createBy;
+
 }

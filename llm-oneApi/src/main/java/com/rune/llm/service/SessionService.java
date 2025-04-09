@@ -1,5 +1,6 @@
 package com.rune.llm.service;
 
+import com.querydsl.core.BooleanBuilder;
 import com.rune.exception.BadRequestException;
 import com.rune.llm.domain.dto.SessionQuery;
 import com.rune.llm.domain.entity.QSession;
@@ -11,6 +12,7 @@ import com.rune.querydsl.JPAQueryFactoryPrimary;
 import com.rune.utils.SecurityUtils;
 import com.rune.utils.UpdateUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,11 @@ public class SessionService {
     private final SessionMapper sessionMapper;
 
     public Page<SessionView> queryAll(SessionQuery query) {
-        Page<Session> page = sessionRepo.findAll(PageRequest.of(query.getCurrent(), query.getPageSize()));
+        QSession qSession = QSession.session;
+        BooleanBuilder builder = new BooleanBuilder();
+        if (StringUtils.isNotBlank(query.getTitle())) builder.and(qSession.title.contains(query.getTitle()));
+        if (StringUtils.isNotBlank(query.getCreateBy())) builder.and(qSession.createBy.contains(query.getCreateBy()));
+        Page<Session> page = sessionRepo.findAll(builder, PageRequest.of(query.getCurrent(), query.getPageSize()));
         return page.map(sessionMapper::toVo);
     }
 
